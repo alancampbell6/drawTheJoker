@@ -38,6 +38,10 @@ class BlockchainController {
         return self.blockchainService.getNextBlock(transactions :[transaction])
     }
     
+    func draw(req :Request) -> Block {
+        return self.blockchainService.draw()
+    }
+
     func addTransactions(req :Request, transaction :Transaction) -> Block {
         return self.blockchainService.addTransactions(transactions :[transaction])
     }
