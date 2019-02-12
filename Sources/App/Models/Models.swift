@@ -95,6 +95,16 @@ final class Blockchain : Content  {
         
     }
     
+    func addTransactions(transactions :[Transaction]) -> Block {
+        
+        let block = Block()
+        transactions.forEach { transaction in
+            block.addTransaction(transaction: transaction)
+        }
+        return block
+        
+    }
+    
     private func getPreviousBlock() -> Block {
         return self.blocks[self.blocks.count - 1]
     }

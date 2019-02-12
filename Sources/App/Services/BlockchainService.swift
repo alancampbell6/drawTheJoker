@@ -48,6 +48,11 @@ class BlockchainService {
         return self.blockchain.nodes
     }
     
+    func addTransactions(transactions :[Transaction]) -> Block {
+        let block = self.blockchain.addTransactions(transactions: transactions)
+        return block
+    }
+    
     func registerNodes(nodes :[BlockchainNode]) -> [BlockchainNode] {
         return self.blockchain.registerNodes(nodes: nodes)
     }
