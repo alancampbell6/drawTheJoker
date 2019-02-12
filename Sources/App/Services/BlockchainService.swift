@@ -1,9 +1,3 @@
-//
-//  BlockchainService.swift
-//  App
-//
-//  Created by Mohammad Azam on 7/15/18.
-//
 
 import Foundation
 
