@@ -35,7 +35,7 @@ final class Block : Content  {
     var hash :String!
     var nonce :Int
     var winner :String = ""
-    var cardNumber :String!
+    var card :String = ""
     
     private (set) var transactions :[Transaction] = [Transaction]()
     
@@ -45,7 +45,7 @@ final class Block : Content  {
             let transactionsData = try! JSONEncoder().encode(self.transactions)
             let transactionsJSONString = String(data: transactionsData, encoding: .utf8)
             
-            return String(self.index) + self.previousHash + String(self.nonce) + String(self.winner) + transactionsJSONString!
+            return String(self.index) + self.previousHash + String(self.nonce) + String(self.winner) + String(self.card) + transactionsJSONString!
         }
     }
     
@@ -63,9 +63,67 @@ final class Blockchain : Content  {
     
     private (set) var blocks = [Block]()
     private (set) var nodes = [BlockchainNode]()
+    var deck = [String]()
+    
+    
     
     init(genesisBlock :Block) {
         addBlock(genesisBlock)
+        initializeDeck()
+    }
+    
+    func initializeDeck(){
+        deck.removeAll()
+        deck.append("Ace of Hearts")
+        deck.append("2 of Hearts")
+        deck.append("3 of Hearts")
+        deck.append("4 of Hearts")
+        deck.append("5 of Hearts")
+        deck.append("6 of Hearts")
+        deck.append("7 of Hearts")
+        deck.append("8 of Hearts")
+        deck.append("9 of Hearts")
+        deck.append("10 of Hearts")
+        deck.append("Jack of Hearts")
+        deck.append("Queen of Hearts")
+        deck.append("King of Hearts")
+        deck.append("Ace of Clubs")
+        deck.append("2 of Clubs")
+        deck.append("3 of Clubs")
+        deck.append("4 of Clubs")
+        deck.append("5 of Clubs")
+        deck.append("6 of Clubs")
+        deck.append("7 of Clubs")
+        deck.append("8 of Clubs")
+        deck.append("9 of Clubs")
+        deck.append("10 of Clubs")
+        deck.append("Jack of Clubs")
+        deck.append("Queen of Clubs")
+        deck.append("King of Clubs")
+        deck.append("Ace of Spades")
+        deck.append("2 of Spades")
+        deck.append("3 of Spades")
+        deck.append("4 of Spades")
+        deck.append("5 of Spades")
+        deck.append("6 of Spades")
+        deck.append("7 of Spades")
+        deck.append("8 of Spades")
+        deck.append("9 of Spades")
+        deck.append("10 of Spades")
+        deck.append("Ace of Diamonds")
+        deck.append("2 of Diamonds")
+        deck.append("3 of Diamonds")
+        deck.append("4 of Diamonds")
+        deck.append("5 of Diamonds")
+        deck.append("6 of Diamonds")
+        deck.append("7 of Diamonds")
+        deck.append("8 of Diamonds")
+        deck.append("9 of Diamonds")
+        deck.append("10 of Diamonds")
+        deck.append("Jack of Diamonds")
+        deck.append("Queen of Diamonds")
+        deck.append("King of Diamonds")
+        deck.append("Joker")
     }
     
     func registerNodes(nodes :[BlockchainNode]) -> [BlockchainNode] {
@@ -87,12 +145,31 @@ final class Blockchain : Content  {
         let block = getPreviousBlock()
         var winner :String = "No Winner"
         if(block.transactions.count>0){
-            let randomNumber = Int.random(in: 0 ..< block.transactions.count)
-            let winningTransaction = block.transactions[randomNumber]
+            let winningTransaction = block.transactions.randomElement()!
             winner = winningTransaction.from
+            
+            block.card = self.deck.randomElement()!
+            while self.deck.contains(block.card) {
+                if let itemToRemoveIndex = self.deck.index(of: block.card) {
+                    self.deck.remove(at: itemToRemoveIndex)
+                }
+            }
+            if(block.card == "Joker"){
+                initializeDeck()
+            }
         }
         block.winner = winner
+        getNextBlock()
         return block
+    }
+    
+    func getNextBlock() {
+        let block = Block()
+        let previousBlock = getPreviousBlock()
+        block.index = self.blocks.count
+        block.previousHash = previousBlock.hash
+        block.hash = generateHash(for: block)
+        addBlock(block)
     }
     
     func getNextBlock(transactions :[Transaction]) -> Block {
